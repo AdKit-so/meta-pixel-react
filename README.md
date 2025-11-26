@@ -795,6 +795,12 @@ Learn more about Meta Pixel from official Facebook resources:
 - [@adkit.so/meta-pixel-nuxt](https://www.npmjs.com/package/@adkit.so/meta-pixel-nuxt) - Nuxt module
 - [@adkit.so/meta-pixel-next](https://www.npmjs.com/package/@adkit.so/meta-pixel-next) - Next.js package with auto PageView tracking
 
+## 📖 Full Guide
+
+For a complete step-by-step guide on installing and configuring Meta Pixel, check out our detailed tutorial:
+
+**[How to Install Meta Pixel](https://adkit.so/resources/how-to-install-meta-pixel)**
+
 ## 🤝 Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request. For major changes, please open an issue first to discuss what you would like to change.
@@ -807,4 +813,4 @@ MIT
 
 **Made with ❤️ by [Adkit](https://adkit.so)**
 
-If this package helped you, please consider giving it a ⭐️ on [GitHub](https://github.com/adkit-so/meta-pixel-react)!
+If this package helped you, please consider giving it a ⭐️ on [GitHub](https://github.com/AdKit-so/meta-pixel-react)!
