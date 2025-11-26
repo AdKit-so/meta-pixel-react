@@ -34,6 +34,74 @@ Built on top of [@adkit.so/meta-pixel](https://www.npmjs.com/package/@adkit.so/m
 - 🏠 **Localhost Support** - Easy configuration to enable/disable tracking on localhost
 - ⚛️ **React Context Pattern** - Clean Provider/Hook pattern that feels native to React
 
+## 📱 Using Next.js?
+
+Use [@adkit.so/meta-pixel-next](https://www.npmjs.com/package/@adkit.so/meta-pixel-next) instead! It provides:
+
+- **Auto PageView tracking on route changes** (this package doesn't do that)
+- Simple `<MetaPixel />` component - no Provider needed
+- Environment variable support (`NEXT_PUBLIC_META_PIXEL_ID`)
+
+```bash
+npm install @adkit.so/meta-pixel-next
+```
+
+## ⚠️ Important: PageView Tracking on Route Changes
+
+**This package tracks PageView on initial load only.** It does NOT automatically track PageView when navigating between pages in a Single Page Application (SPA).
+
+### Why?
+
+React apps use client-side routing (React Router, etc.) which doesn't trigger full page reloads. The Meta Pixel script only fires PageView once when the page loads.
+
+### How to handle route changes?
+
+**Option 1: Use the Next.js package** (recommended for Next.js)
+
+```bash
+npm install @adkit.so/meta-pixel-next
+```
+
+**Option 2: Manually track PageView on route changes**
+
+```tsx
+// With React Router
+import { useEffect } from 'react'
+import { useLocation } from 'react-router-dom'
+import { useMetaPixel } from '@adkit.so/meta-pixel-react'
+
+function RouteChangeTracker() {
+  const location = useLocation()
+  const meta = useMetaPixel()
+  const isFirstRender = useRef(true)
+
+  useEffect(() => {
+    // Skip first render (initial PageView is auto-tracked)
+    if (isFirstRender.current) {
+      isFirstRender.current = false
+      return
+    }
+
+    // Track PageView on route change
+    if (meta.isLoaded()) {
+      meta.track('PageView')
+    }
+  }, [location.pathname])
+
+  return null
+}
+
+// Add to your App
+function App() {
+  return (
+    <MetaPixelProvider pixelIds="YOUR_PIXEL_ID">
+      <RouteChangeTracker />
+      <YourRoutes />
+    </MetaPixelProvider>
+  )
+}
+```
+
 ## ⚡ Quick Start
 
 ```bash
@@ -56,11 +124,8 @@ function App() {
 function ProductPage() {
   const meta = useMetaPixel()
   
-  const handlePurchase = () => {
-    meta.track('Purchase', {
-      value: 99.99,
-      currency: 'USD'
-    })
+  function handlePurchase() {
+    meta.track('Purchase', { value: 99.99, currency: 'USD' })
   }
   
   return <button onClick={handlePurchase}>Buy Now</button>
@@ -155,7 +220,7 @@ import { useMetaPixel } from '@adkit.so/meta-pixel-react'
 function ProductPage() {
   const meta = useMetaPixel()
 
-  const handleAddToCart = () => {
+  function handleAddToCart() {
     meta.track('AddToCart', {
       content_name: 'Wireless Headphones',
       content_ids: ['SKU_789'],
@@ -199,7 +264,7 @@ import { useMetaPixel } from '@adkit.so/meta-pixel-react'
 function CheckoutPage() {
   const meta = useMetaPixel()
 
-  const handlePurchase = async () => {
+  async function handlePurchase() {
     const orderId = await processOrder()
     
     meta.track(
@@ -227,12 +292,9 @@ import { useMetaPixel } from '@adkit.so/meta-pixel-react'
 function MyComponent() {
   const meta = useMetaPixel()
 
-  const trackIfReady = () => {
-    if (meta.isLoaded()) {
-      meta.track('Purchase', { value: 99.99, currency: 'USD' })
-    } else {
-      console.log('Pixel not loaded yet')
-    }
+  function trackIfReady() {
+    if (meta.isLoaded()) meta.track('Purchase', { value: 99.99, currency: 'USD' })
+    else console.log('Pixel not loaded yet')
   }
 
   return <button onClick={trackIfReady}>Buy Now</button>
@@ -298,7 +360,7 @@ import { useMetaPixel } from '@adkit.so/meta-pixel-react'
 function EcommerceExample() {
   const meta = useMetaPixel()
 
-  const trackPurchase = () => {
+  function trackPurchase() {
     meta.track('Purchase', {
       value: 299.99,
       currency: 'USD',
@@ -308,17 +370,12 @@ function EcommerceExample() {
     })
   }
 
-  const trackLead = () => {
-    meta.track('Lead', {
-      content_name: 'Newsletter Signup',
-      content_category: 'Marketing'
-    })
+  function trackLead() {
+    meta.track('Lead', { content_name: 'Newsletter Signup', content_category: 'Marketing' })
   }
 
-  const trackSearch = (query: string) => {
-    meta.track('Search', {
-      search_string: query
-    })
+  function trackSearch(query: string) {
+    meta.track('Search', { search_string: query })
   }
 
   return (
@@ -378,7 +435,7 @@ function ProductPage() {
     })
   }, [product.id])
 
-  const handleAddToCart = () => {
+  function handleAddToCart() {
     meta.track('AddToCart', {
       content_ids: [product.id],
       content_type: 'product',
@@ -388,7 +445,7 @@ function ProductPage() {
     })
   }
 
-  const handlePurchase = async () => {
+  async function handlePurchase() {
     const orderId = await processOrder()
     
     meta.track(
@@ -429,18 +486,12 @@ import { useMetaPixel } from '@adkit.so/meta-pixel-react'
 function PricingPage() {
   const meta = useMetaPixel()
 
-  const trackPricingView = () => {
-    meta.trackCustom('PricingPageViewed', {
-      plan: 'enterprise',
-      duration: 'annual'
-    })
+  function trackPricingView() {
+    meta.trackCustom('PricingPageViewed', { plan: 'enterprise', duration: 'annual' })
   }
 
-  const trackVideoComplete = () => {
-    meta.trackCustom('VideoWatched', {
-      video_id: 'intro_2024',
-      watch_percentage: 100
-    })
+  function trackVideoComplete() {
+    meta.trackCustom('VideoWatched', { video_id: 'intro_2024', watch_percentage: 100 })
   }
 
   return (
@@ -462,7 +513,7 @@ import { useMetaPixel } from '@adkit.so/meta-pixel-react'
 function CheckoutPage() {
   const meta = useMetaPixel()
 
-  const processOrder = async () => {
+  async function processOrder() {
     const orderId = await createOrder()
     
     // Use order ID as event ID to prevent duplicates
@@ -495,7 +546,7 @@ function RegisterPage() {
   const meta = useMetaPixel()
   const { user } = useAuth()
 
-  const handleRegistration = async () => {
+  async function handleRegistration() {
     // Only track if pixel is loaded
     if (!meta.isLoaded()) {
       console.warn('Meta Pixel not loaded yet')
@@ -524,7 +575,7 @@ function ContactForm() {
   const meta = useMetaPixel()
   const [formData, setFormData] = useState({ name: '', email: '' })
 
-  const handleSubmit = async (e: FormEvent) => {
+  async function handleSubmit(e: FormEvent) {
     e.preventDefault()
     
     // Track the lead
@@ -569,12 +620,10 @@ function SearchBar() {
   const meta = useMetaPixel()
   const [query, setQuery] = useState('')
 
-  const handleSearch = (e: FormEvent) => {
+  function handleSearch(e: FormEvent) {
     e.preventDefault()
     
-    meta.track('Search', {
-      search_string: query
-    })
+    meta.track('Search', { search_string: query })
 
     performSearch(query)
   }
@@ -667,12 +716,9 @@ import type {
   MetaPixelConfig 
 } from '@adkit.so/meta-pixel-react'
 
-const config: MetaPixelConfig = {
-  pixelIds: 'YOUR_PIXEL_ID',
-  debug: true
-}
+const config: MetaPixelConfig = { pixelIds: 'YOUR_PIXEL_ID', debug: true }
 
-const trackEvent = (event: StandardEvent, data: EventData) => {
+function trackEvent(event: StandardEvent, data: EventData) {
   const meta = useMetaPixel()
   meta.track(event, data)
 }
@@ -747,7 +793,7 @@ Learn more about Meta Pixel from official Facebook resources:
 
 - [@adkit.so/meta-pixel](https://www.npmjs.com/package/@adkit.so/meta-pixel) - Core JavaScript package
 - [@adkit.so/meta-pixel-nuxt](https://www.npmjs.com/package/@adkit.so/meta-pixel-nuxt) - Nuxt module
-- [@adkit.so/meta-pixel-nextjs](https://www.npmjs.com/package/@adkit.so/meta-pixel-nextjs) - Next.js package (coming soon)
+- [@adkit.so/meta-pixel-next](https://www.npmjs.com/package/@adkit.so/meta-pixel-next) - Next.js package with auto PageView tracking
 
 ## 🤝 Contributing
 
