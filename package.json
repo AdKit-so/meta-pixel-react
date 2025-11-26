@@ -2,6 +2,10 @@
   "name": "@adkit.so/meta-pixel-react",
   "version": "1.0.0",
   "description": "React wrapper for Meta Pixel tracking with TypeScript support",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/adkit-so/meta-pixel-react.git"
+  },
   "type": "module",
   "main": "./dist/index.mjs",
   "module": "./dist/index.mjs",
