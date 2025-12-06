@@ -43,3 +43,4 @@ test/
     └── pixel-loading.spec.ts  # E2E tests for pixel loading & tracking
 ```
 
+
